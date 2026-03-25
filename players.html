@@ -352,7 +352,12 @@ function renderSummary(p) {
 
 function fmtAvg(v) {
   if (v === null || v === undefined) return '-';
-  return v.toFixed(3).replace(/^0/, '');
+  return v.toFixed(3).replace(/^0\./, '.');
+}
+function fmtAvgAb(v, ab) {
+  // ab > 0 なのに avg が null（0安打）の場合は .000 を返す
+  if (v !== null && v !== undefined) return fmtAvg(v);
+  return ab > 0 ? '.000' : '-';
 }
 
 function renderBatTable(p) {
@@ -397,8 +402,8 @@ function renderBatTable(p) {
       <td>${r.h}</td><td>${r.d}</td><td>${r.t}</td>
       <td class="${r.hr>=3?'good':''}">${r.hr}</td>
       <td>${r.rbi}</td><td>${r.sb}</td><td>${r.sac}</td><td>${r.bb}</td><td>${r.so}</td>
-      <td class="avg-col ${r.avg>=0.3?'good':''}">${r.avg!==null?fmtAvg(r.avg):'-'}</td>
-      <td>${r.obp!==null?fmtAvg(r.obp):'-'}</td>
+      <td class="avg-col ${r.avg>=0.3?'good':''}">${fmtAvgAb(r.avg,r.ab)}</td>
+      <td>${fmtAvgAb(r.obp,r.pa)}</td>
       <td>${titles.join(' ')}</td>
     </tr>`;
   });
@@ -409,8 +414,8 @@ function renderBatTable(p) {
       <td>${tg}</td><td>${tpa}</td><td>${tab}</td><td>${tr}</td>
       <td>${th}</td><td>${td}</td><td>${tt}</td><td>${thr}</td>
       <td>${trbi}</td><td>${tsb}</td><td>${tsac}</td><td>${tbb}</td><td>${tso}</td>
-      <td class="avg-col ${tavg>=0.3?'good':''}">${tavg!==null?fmtAvg(tavg):'-'}</td>
-      <td>${tobp!==null?fmtAvg(tobp):'-'}</td>
+      <td class="avg-col ${tavg>=0.3?'good':''}">${fmtAvgAb(tavg,tab)}</td>
+      <td>${fmtAvgAb(tobp,tpa)}</td>
       <td></td>
     </tr>`;
   }
