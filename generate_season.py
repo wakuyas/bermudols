@@ -97,12 +97,12 @@ def load_excel(xlsx_path):
         rec = {"date":date,"opp":opp,"name":name,
                "pa":pa,"ab":ab,"r":r,"h1":h1,"h2":h2,"h3":h3,"hr":hr,
                "h":h,"rbi":rbi,"sb":sb,"sac":sac,"sf":sf,"bb":bb,"so":so,"lob":lob}
-        game_bat.setdefault(opp, []).append(rec)
+        game_bat.setdefault(f"{opp}|{date}", []).append(rec)
         player_bat.setdefault(name, []).append({**rec})
 
     # ── 投手成績 ──────────────────────────────────────────────────────────
     ws_pit = wb["投手成績"]
-    game_pit   = {}
+    game_pit   = {}   # {"opp|date": [...]}
     player_pit = {}
     for row in ws_pit.iter_rows(min_row=3, values_only=True):
         if len(row) < 11:
@@ -118,7 +118,7 @@ def load_excel(xlsx_path):
         wl_norm = {"○":"○","●":"●","S":"S","勝":"○","敗":"●","s":"S"}.get(wl, wl)
         rec = {"date":date,"opp":opp,"name":name,"wl":wl_norm,
                "ip":ip,"bf":bf,"h":h,"bb":bb,"so":so,"r":r,"er":er}
-        game_pit.setdefault(opp, []).append(rec)
+        game_pit.setdefault(f"{opp}|{date}", []).append(rec)
         player_pit.setdefault(name, []).append({**rec})
 
     return games, game_bat, player_bat, game_pit, player_pit
@@ -243,11 +243,12 @@ def game_rows_html(games):
         inn = "".join(
             f'<td class="inn-cell">{v if v else "·"}</td>' for v in g["innings"]
         )
-        opp_esc = g["opp"].replace("'", "\\'")
+        opp_esc  = g["opp"].replace("'", "\\'")
+        date_esc = g["date"].replace("'", "\\'")
         rows.append(
             f'<tr class="game-row {rc}">'
-            f'<td class="date-col"><a class="game-link" href="#" onclick="showGame(event,\'{opp_esc}\')">{g["date"]}</a></td>'
-            f'<td class="opp-col"><a class="game-link" href="#" onclick="showGame(event,\'{opp_esc}\')">{g["opp"]}</a></td>'
+            f'<td class="date-col"><a class="game-link" href="#" onclick="showGame(event,\'{opp_esc}\',\'{date_esc}\')">{g["date"]}</a></td>'
+            f'<td class="opp-col"><a class="game-link" href="#" onclick="showGame(event,\'{opp_esc}\',\'{date_esc}\')">{g["opp"]}</a></td>'
             f'<td class="score-cell bd-score">{g["bd"]}</td>'
             f'<td class="score-sep">-</td>'
             f'<td class="score-cell opp-score">{g["opp_score"]}</td>'
@@ -669,11 +670,11 @@ function showPlayer(e, name) {{
   openModal(`${{name}} 個人成績`, html);
 }}
 
-function showGame(e, opp) {{
+function showGame(e, opp, date) {{
   e.preventDefault();
-  const date = oppDate[opp] || '';
-  const bats = gameBat[opp] || [];
-  const pits = gamePit[opp] || [];
+  const key = opp + '|' + date;
+  const bats = gameBat[key] || [];
+  const pits = gamePit[key] || [];
   let html = '';
   if (bats.length) {{
     let cums = {{}};
@@ -685,7 +686,7 @@ function showGame(e, opp) {{
     for (const r of bats) {{
       const allG = playerBat[r.name] || [];
       let cAb=0, cH=0;
-      for (const g of allG) {{ cAb+=parseInt(g.ab)||0; cH+=parseInt(g.h)||0; if(g.opp===opp) break; }}
+      for (const g of allG) {{ cAb+=parseInt(g.ab)||0; cH+=parseInt(g.h)||0; if(g.opp===opp&&g.date===date) break; }}
       const avg = cAb>0 ? fmtRate(cH/cAb) : '—';
       html += `<tr><td class="name-col">${{r.name}}</td>
         ${{td(r.pa)}}${{td(r.ab)}}${{td(r.r)}}${{td(r.h)}}${{td(r.rbi)}}${{td(r.sb)}}
@@ -703,7 +704,7 @@ function showGame(e, opp) {{
     for (const r of pits) {{
       const allP = playerPit[r.name] || [];
       let cIp=0, cEr=0;
-      for (const g of allP) {{ cIp+=ipToNum(g.ip); cEr+=parseInt(g.er)||0; if(g.opp===opp) break; }}
+      for (const g of allP) {{ cIp+=ipToNum(g.ip); cEr+=parseInt(g.er)||0; if(g.opp===opp&&g.date===date) break; }}
       const era = cIp>0 ? fmtRate(cEr*9/cIp) : '—';
       html += `<tr><td class="name-col">${{r.name}}</td>${{td(r.wl)}}
         ${{td(r.ip)}}${{td(r.bf)}}${{td(r.h)}}${{td(r.bb)}}
