@@ -79,6 +79,39 @@
     .main { padding: 12px; }
     .cat-tab { padding: 8px 12px; font-size: 12px; }
   }
+
+  /* ── 記録ルールモーダル ── */
+  .rules-btn { display:inline-flex; align-items:center; gap:4px; margin-left:10px;
+               font-size:11px; font-weight:700; color:var(--primary); background:rgba(26,58,92,.08);
+               border:1px solid rgba(26,58,92,.25); border-radius:4px; padding:2px 8px;
+               cursor:pointer; vertical-align:middle; transition:all .15s; text-decoration:none; }
+  .rules-btn:hover { background:var(--primary); color:#fff; }
+  .rules-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+                   z-index:2000; align-items:center; justify-content:center; padding:16px; }
+  .rules-overlay.open { display:flex; }
+  .rules-modal { background:var(--card-bg,#fffef9); border-radius:14px; max-width:720px; width:100%;
+                 max-height:88vh; overflow-y:auto; }
+  .rules-modal-hdr { background:var(--primary,#1a3a5c); color:#fff; padding:14px 20px;
+                      border-radius:14px 14px 0 0; display:flex; justify-content:space-between; align-items:center; }
+  .rules-modal-title { font-size:15px; font-weight:900; }
+  .rules-modal-close { background:none; border:none; color:#fff; font-size:22px; cursor:pointer; opacity:.7; line-height:1; }
+  .rules-modal-close:hover { opacity:1; }
+  .rules-modal-body { padding:18px 22px; }
+  .rules-section { margin-bottom:22px; }
+  .rules-section:last-child { margin-bottom:0; }
+  .rules-section-title { font-size:14px; font-weight:900; color:var(--primary,#1a3a5c);
+                          border-left:4px solid var(--primary,#1a3a5c); padding-left:10px;
+                          margin-bottom:10px; }
+  .rules-body { font-size:13px; line-height:1.85; color:var(--text,#2c2416); }
+  .rules-body p { margin-bottom:8px; }
+  .rules-body ul { padding-left:18px; margin-bottom:8px; }
+  .rules-body li { margin-bottom:4px; }
+  .rules-table { width:100%; border-collapse:collapse; font-size:12px; margin:8px 0 12px; }
+  .rules-table th { background:var(--primary,#1a3a5c); color:#fff; padding:5px 10px; text-align:left; }
+  .rules-table td { padding:5px 10px; border-bottom:1px solid #ede8dc; }
+  .rules-table tr:last-child td { border-bottom:none; }
+  .rules-note { font-size:11px; color:var(--muted,#7a6e5a); background:#f5f0e8; border-radius:6px;
+                padding:8px 12px; margin-top:8px; line-height:1.7; }
 </style>
 </head>
 <body>
@@ -107,6 +140,7 @@
   <!-- ===== 打撃 数量 ===== -->
   <div class="cat-section active" id="cat-bat-count">
     <div class="cat-title">打撃 通算記録 — 数量部門 <span>上位30位</span></div>
+    <button class="rules-btn" onclick="openRules()">📋 記録ルール</button>
     <div class="rank-grid" id="grid-bat-count"></div>
   </div>
 
@@ -264,6 +298,86 @@ function openPlayer(id) {
 }
 
 renderAll();
+</script>
+<!-- 記録ルールモーダル -->
+<div class="rules-overlay" id="rulesOverlay" onclick="if(event.target===this)closeRules()">
+  <div class="rules-modal">
+    <div class="rules-modal-hdr">
+      <span class="rules-modal-title">📋 チーム記録ルール</span>
+      <button class="rules-modal-close" onclick="closeRules()">✕</button>
+    </div>
+    <div class="rules-modal-body">
+
+      <div class="rules-section">
+        <div class="rules-section-title">規定打席</div>
+        <div class="rules-body">
+          <p><strong>試合数 × 1.3 以上</strong>の打席数を条件とする。</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-section-title">勝利投手</div>
+        <div class="rules-body">
+          <p>先発投手が、行われた試合のイニング数に対して下記のイニング以上を投げ、かつ交代時にリードしており、そのリードが試合終了まで保たれた場合、先発投手を勝ち投手とする。</p>
+          <table class="rules-table">
+            <thead><tr><th>試合イニング</th><th>必要投球回</th></tr></thead>
+            <tbody>
+              <tr><td>7回</td><td>4回以上</td></tr>
+              <tr><td>6回</td><td>3回以上</td></tr>
+              <tr><td>5回</td><td>3回以上</td></tr>
+              <tr><td>4回</td><td>2回以上</td></tr>
+              <tr><td>3回以下</td><td>2回以上</td></tr>
+            </tbody>
+          </table>
+          <p>先発投手が上記に該当しない場合は、公式野球規則に則り、原則として勝ち越した時点で登板していた投手を勝利とする。</p>
+          <div class="rules-note">【試合イニングの算入方法】守備を開始したイニングまでを算入する。<br>
+          例：先攻で6回表途中に試合終了 → 試合イニング5回<br>
+          　　後攻で6回表途中に試合終了 → 試合イニング6回</div>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-section-title">セーブポイント獲得条件</div>
+        <div class="rules-body">
+          <p>次の (a)〜(c) の条件をすべて満たした場合に与えられる。</p>
+          <ul>
+            <li>(a) 勝ち試合の最後を投げ切った投手であること</li>
+            <li>(b) 勝利投手ではないこと</li>
+            <li>(c) 次の (ア)〜(ウ) のいずれかに当てはまること</li>
+          </ul>
+          <p><strong>(ア)</strong>「無走者・3点以内のリード」の場面で登板し、最低1イニング以上を投げた。（試合成立回数を問わない）</p>
+          <p><strong>(イ)</strong> 塁上の走者・相対する打者・次の打者が得点したら同点になる場面で登板し、リードを守り切った。（投球回数を問わない）</p>
+          <p><strong>(ウ)</strong> 行われた試合のイニング数に対して、下記のイニングを投げた。（点差不問）</p>
+          <table class="rules-table">
+            <thead><tr><th>試合イニング</th><th>必要投球回</th></tr></thead>
+            <tbody>
+              <tr><td>7回</td><td>3回</td></tr>
+              <tr><td>6回</td><td>2回</td></tr>
+              <tr><td>5回</td><td>2回</td></tr>
+              <tr><td>4回以下</td><td>(ウ) は適用なし</td></tr>
+            </tbody>
+          </table>
+          <div class="rules-note">例：試合が4回で終了した勝ち試合、救援投手が4回から登板した場合<br>
+          ・4点リードで4回1イニングを投げリードを守り切った場合 → (ア)(ウ) いずれも非該当のためセーブなし<br>
+          ・3点以内のリードで同条件なら → (ア) 該当によりセーブ獲得</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+function openRules() {
+  document.getElementById('rulesOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeRules() {
+  document.getElementById('rulesOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeRules();
+});
 </script>
 </body>
 </html>
