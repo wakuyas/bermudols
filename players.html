@@ -107,6 +107,12 @@
     white-space: nowrap; vertical-align: middle;
   }
   .title-badge.mvp { background: #b8860b; }
+  .qual-badge {
+    display: inline-block; font-size: 9px; font-weight: 700;
+    background: var(--gold); color: #fff;
+    border-radius: 3px; padding: 1px 4px; margin-left: 4px;
+    vertical-align: middle; white-space: nowrap;
+  }
 
   /* No data */
   .no-data { padding: 30px; text-align: center; color: var(--muted); font-size: 13px; }
@@ -432,7 +438,7 @@ function renderBatTable(p) {
     if (r.sb_title) titles.push('<span class="title-badge">盗塁王</span>');
     const hasTitles = titles.length > 0;
     html += `<tr class="${hasTitles?'title-row':''}">
-      <td class="year-col left">${r.year}</td>
+      <td class="year-col left">${r.year}${r.qualified?'<span class="qual-badge">規定</span>':''}</td>
       <td>${r.g}</td><td>${r.pa}</td><td>${r.ab}</td><td>${r.r}</td>
       <td>${r.h}</td><td>${r.d}</td><td>${r.t}</td>
       <td class="${r.hr>=3?'good':''}">${r.hr}</td>
@@ -489,7 +495,7 @@ function renderPitTable(p) {
     const hasTitles = titles.length > 0;
     const era = r.era;
     html += `<tr class="${hasTitles?'title-row':''}">
-      <td class="year-col left">${r.year}</td>
+      <td class="year-col left">${r.year}${r.qualified?'<span class="qual-badge">規定</span>':''}</td>
       <td>${r.g}</td>
       <td class="${r.w>=3?'good':''}">${r.w}</td>
       <td>${r.l}</td><td>${r.sv}</td>
