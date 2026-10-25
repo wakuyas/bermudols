@@ -784,6 +784,27 @@ def main():
     print(f"✅ 生成完了: {out_path}")
     if out_name != "season.html":
         print(f"ℹ️  season.html は最新年度({max(KNOWN_YEARS)}年)が自動的に使用されます")
+    else:
+        update_index_season_card(Path(__file__).parent / "index.html", year, wins, losses, draws, total)
+
+
+def update_index_season_card(index_path, year, wins, losses, draws, total):
+    """トップページの「今シーズン成績」カード（試合数・成績・シーズン）を更新する"""
+    if not index_path.exists():
+        return
+    s = index_path.read_text(encoding="utf-8")
+    m = re.search(r'(<a class="section-card" href="season.html">.*?</a>)', s, re.S)
+    if not m:
+        print("⚠️  index.html に今シーズン成績カードが見つかりません")
+        return
+    rec = f"{wins}勝{losses}敗" + (f"{draws}分" if draws else "")
+    card = m.group(1)
+    card = re.sub(r'(<div class="sc-stat-val">)[^<]*(</div><div class="sc-stat-label">試合数)', rf'\g<1>{total}\g<2>', card)
+    card = re.sub(r'(<div class="sc-stat-val">)[^<]*(</div><div class="sc-stat-label">成績)', rf'\g<1>{rec}\g<2>', card)
+    card = re.sub(r'(<div class="sc-stat-val">)[^<]*(</div><div class="sc-stat-label">シーズン)', rf'\g<1>{year}\g<2>', card)
+    card = re.sub(r'\d{4}年シーズンの試合結果', f'{year}年シーズンの試合結果', card)
+    index_path.write_text(s.replace(m.group(1), card), encoding="utf-8")
+    print(f"✅ index.html 今シーズン成績を更新: {total}試合 {rec}")
 
 if __name__ == "__main__":
     main()

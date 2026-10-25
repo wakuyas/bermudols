@@ -233,7 +233,7 @@ function buildYearButtons() {
     const btn = document.createElement('button');
     btn.className = 'yr-btn';
     btn.textContent = y;
-    btn.onclick = () => setYear(y);
+    btn.onclick = () => setYear(String(y));
     btn.dataset.year = String(y);
     container.appendChild(btn);
   });
@@ -288,7 +288,7 @@ function applyFilter() {
     let show = true;
     // 年度フィルター
     if (currentYear !== 'all') {
-      if (currentYear.startsWith('decade_')) {
+      if (String(currentYear).startsWith('decade_')) {
         const d = currentYear.replace('decade_', '');
         if (decade !== d) show = false;
       } else {
