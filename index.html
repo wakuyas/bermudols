@@ -81,8 +81,27 @@
   .hl-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
   .hl-sub { font-size: 11px; color: var(--muted); }
 
+  /* ── Notice (Times 欠号のお願い) ── */
+  .notice {
+    display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+    background: #fff7e0; border: 2px solid var(--gold); border-left: 8px solid var(--accent);
+    border-radius: 14px; padding: 20px 24px; margin-bottom: 36px;
+    box-shadow: 0 4px 14px rgba(212,160,23,.18);
+  }
+  .notice-icon { font-size: 40px; line-height: 1; }
+  .notice-body { flex: 1; min-width: 240px; }
+  .notice-label { display: inline-block; background: var(--accent); color: white; font-size: 11px;
+                  font-weight: 700; letter-spacing: .1em; border-radius: 4px; padding: 2px 8px; margin-bottom: 6px; }
+  .notice-title { font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
+  .notice-text { font-size: 13px; color: var(--text); line-height: 1.8; }
+  .notice-btn { background: var(--primary); color: white; text-decoration: none; font-weight: 700;
+                font-size: 14px; padding: 12px 20px; border-radius: 8px; white-space: nowrap; }
+  .notice-btn:hover { background: var(--accent); }
+
   @media (max-width: 600px) {
     .hero { padding: 36px 16px 32px; }
+    .notice { padding: 16px; }
+    .notice-btn { width: 100%; text-align: center; }
     .sections { padding: 24px 16px 40px; }
     .sc-stats { gap: 14px; }
   }
@@ -99,6 +118,20 @@
 
 <div class="sections">
 
+  <!-- Notice: Times 欠号の提供のお願い -->
+  <div class="notice">
+    <div class="notice-icon">📢</div>
+    <div class="notice-body">
+      <div class="notice-label">お願い</div>
+      <div class="notice-title">タイムズの欠号を探しています</div>
+      <div class="notice-text">
+        アーカイブにまだ173号分のタイムズが揃っていません。お手元に残っている号があれば、
+        PDF・PowerPoint・Excel・紙のコピーなど形式を問わずご提供ください。
+      </div>
+    </div>
+    <a class="notice-btn" href="missing_times.html">欠号リストを見る →</a>
+  </div>
+
   <!-- Section cards -->
   <div class="section-cards">
 
@@ -111,8 +144,8 @@
         </div>
       </div>
       <div class="sc-stats">
-        <div class="sc-stat"><div class="sc-stat-val">752</div><div class="sc-stat-label">収録号数</div></div>
-        <div class="sc-stat"><div class="sc-stat-val">75</div><div class="sc-stat-label">号外・その他</div></div>
+        <div class="sc-stat"><div class="sc-stat-val">1,018</div><div class="sc-stat-label">収録号数</div></div>
+        <div class="sc-stat"><div class="sc-stat-val">111</div><div class="sc-stat-label">号外・その他</div></div>
         <div class="sc-stat"><div class="sc-stat-val">1976〜2026</div><div class="sc-stat-label">収録期間</div></div>
       </div>
       <div class="sc-footer">タイムズを見る <span>→</span></div>
@@ -127,8 +160,8 @@
         </div>
       </div>
       <div class="sc-stats">
-        <div class="sc-stat"><div class="sc-stat-val">1,195</div><div class="sc-stat-label">総試合数</div></div>
-        <div class="sc-stat"><div class="sc-stat-val">907</div><div class="sc-stat-label">タイムズリンク</div></div>
+        <div class="sc-stat"><div class="sc-stat-val">1,213</div><div class="sc-stat-label">総試合数</div></div>
+        <div class="sc-stat"><div class="sc-stat-val">1,033</div><div class="sc-stat-label">タイムズリンク</div></div>
         <div class="sc-stat"><div class="sc-stat-val">1976〜</div><div class="sc-stat-label">収録期間</div></div>
       </div>
       <div class="sc-footer">全試合を見る <span>→</span></div>
